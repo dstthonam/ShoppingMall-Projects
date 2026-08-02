@@ -1,3 +1,28 @@
+# Yaml 프로젝트는 스페이스바로  띄어쓰기 하기
 spring:
   application:
     name: dst
+
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@localhost:1521:orcl
+    username: ORCLSTUDY
+#2026-07-18 비번 변경
+    password: '123456'
+
+  jpa:
+    database-platform: org.hibernate.dialect.OracleDialect
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        # 특수문자(. , _)가 포함된 키를 []로 감싸 경고를 해결
+        "[format_sql]": true
+        "[use_sql_comments]": true
+
+server:
+  port: 9200				
