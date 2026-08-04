@@ -5,8 +5,11 @@ spring:
 
   datasource:
     driver-class-name: oracle.jdbc.OracleDriver
-    url: jdbc:oracle:thin:@localhost:1521:orcl
+#    url: jdbc:oracle:thin:@localhost:1521:orcl
+#    username: ORCLSTUDY
+    url: jdbc:oracle:thin:@localhost:1521/FREEPDB1
     username: ORCLSTUDY
+
 #2026-07-18 비번 변경
     password: '123456'
 

@@ -1,10 +1,16 @@
 package com.thoany.dst.common.exception;
 
-public abstract class ResourceNotFoundException extends RuntimeException {
+import lombok.Getter;
 
-		protected ResourceNotFoundException(Class<?> resourceClass, Object id) {
-			
-				super(String.format("%s를 찾을 수 없습니다. id = %s", resourceClass.getSimpleName(), id));	
-		}
+@Getter
+public class ResourceNotFoundException extends RuntimeException {
+
+    private final ErrorCode errorCode;
+
+	public ResourceNotFoundException(ErrorCode errorCode) {
+		
+		super(errorCode.getMessage());
+		this.errorCode = errorCode;
+	}
 
 }

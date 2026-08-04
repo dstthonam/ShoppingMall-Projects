@@ -9,9 +9,9 @@ import lombok.Getter;
 @AllArgsConstructor
 public class MemberResponseDto {
 
-		private Long 		memberId;
+		private Long 	memberId;
 		private String	memberName;
-		private Long		userId;
+		private Long	userId;
 		private String	userEmail;
 		private String	userPhoneNumber;
 		private String	userAddress;

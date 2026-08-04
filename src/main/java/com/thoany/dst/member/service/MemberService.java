@@ -21,7 +21,7 @@ public class MemberService {
 
 		private final MemberRepository memberRepository;
 
-		public List<MemberResponseDto> findAll() {
+		public List<MemberResponseDto> findMembersAll() {
 				
 				return memberRepository.findAll()
 									.stream()
@@ -29,12 +29,12 @@ public class MemberService {
 									.toList(); 
 		}
 		
-		public MemberResponseDto findById(Long memberId) {
-				
-				Members members = memberRepository.findById(memberId)
-																	.orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
-				
-				return MemberResponseDto.from(members); 
+		public MemberResponseDto findMembersById(Long memberId) {
+			
+			    Members members = memberRepository.findById(memberId)
+			    			.orElseThrow(() -> new MemberNotFoundException(memberId));
+	
+			    return MemberResponseDto.from(members);
 		}
 		
 		@Transactional
@@ -56,7 +56,7 @@ public class MemberService {
 		public MemberResponseDto updateMember(Long memberId, MemberUpdateRequestDto request) {
 				
 				Members members = memberRepository.findById(memberId)
-																	.orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+							.orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
 				
 				// validation check
 				validateDuplicateEmail(memberId, request.getUserEmail());
@@ -75,11 +75,11 @@ public class MemberService {
 		public void deleteMember(Long memberId) {
 				
 				memberRepository.delete(memberRepository.findById(memberId)
-								.orElseThrow(() -> new MemberNotFoundException(memberId)));
+		    			.orElseThrow(() -> new MemberNotFoundException(memberId)));
 		}
 		
 		@Transactional
-		public void deleteMemberById(Long memberId) {
+		public void deleteMembersById(Long memberId) {
 				
 				memberRepository.deleteById(memberId);
 		}

@@ -51,7 +51,7 @@ public class MemberServiceTest {
 						.build());
 
 		    // when
-		    List<MemberResponseDto> members = memberService.findAll();
+		    List<MemberResponseDto> members = memberService.findMembersAll();
 
 		    // then
 		    members.forEach(member -> System.out.println(member.getMemberName()));
@@ -75,7 +75,7 @@ public class MemberServiceTest {
 		    MemberResponseDto createdMember = memberService.createMembers(request);
 
 		    // when
-		    MemberResponseDto found = memberService.findById(createdMember.getMemberId());
+		    MemberResponseDto found = memberService.findMembersById(createdMember.getMemberId());
 
 		    // then
 		    assertThat(found.getMemberName()).isEqualTo("홍길동");
