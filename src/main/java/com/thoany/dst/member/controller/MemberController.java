@@ -1,7 +1,9 @@
 package com.thoany.dst.member.controller;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.thoany.dst.member.dto.MemberCreateRequestDto;
@@ -28,10 +31,28 @@ public class MemberController {
 
 		private final MemberService memberService;
 		
+		/**
 		@GetMapping
 		public ResponseEntity<List<MemberResponseDto>> findMembersAll() {
 				
 			return ResponseEntity.ok(memberService.findMembersAll());
+		}
+		*/
+
+		// 페이징 처리
+		@GetMapping
+		public String findMembers(Pageable pageable) {
+			memberService.findMembersPagingAll();
+			
+			return "main";
+		}
+
+		@GetMapping
+		public ResponseEntity<List<MemberResponseDto>> findMembersAll(
+								@RequestParam(required = false, defaultValue = "0", value = "page") int pageNo,
+		                        @RequestParam(required = false, defaultValue = "memberName", value = "criteria") String criteria) {
+				
+			return ResponseEntity.ok(memberService.findMembersPagingAll(pageNo, criteria));
 		}
 		
 		@GetMapping("/{memberId}")
@@ -59,10 +80,10 @@ public class MemberController {
 		}
 
 		@DeleteMapping("/{memberId}")
-		public ResponseEntity<Void> deleteMembersById(
+		public ResponseEntity<Void> deleteMembers(
 				@PathVariable("memberId") Long memberId) {
 				
-			memberService.deleteMembersById(memberId);
+			memberService.deleteMember(memberId);
 			
 			return ResponseEntity.noContent().build();
 		}

@@ -1,5 +1,6 @@
 package com.thoany.dst.member.service;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -9,6 +10,8 @@ import com.thoany.dst.member.dto.MemberCreateRequestDto;
 import com.thoany.dst.member.dto.MemberResponseDto;
 import com.thoany.dst.member.dto.MemberUpdateRequestDto;
 import com.thoany.dst.member.entity.Members;
+import com.thoany.dst.member.exception.MemberExistsEmailException;
+import com.thoany.dst.member.exception.MemberExistsPhoneNumberException;
 import com.thoany.dst.member.exception.MemberNotFoundException;
 import com.thoany.dst.member.repository.MemberRepository;
 
@@ -27,6 +30,12 @@ public class MemberService {
 									.stream()
 									.map(MemberResponseDto::from)
 									.toList(); 
+		}
+		
+		public void findMembersPagingAll(int pageNo, String criteria) {
+				
+				memberRepository.findByMemberOrderByMemberNameAsc(createMembers(), pageable)
+									.map(MemberResponseDto::from); 
 		}
 		
 		public MemberResponseDto findMembersById(Long memberId) {
@@ -56,7 +65,7 @@ public class MemberService {
 		public MemberResponseDto updateMember(Long memberId, MemberUpdateRequestDto request) {
 				
 				Members members = memberRepository.findById(memberId)
-							.orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+		    				.orElseThrow(() -> new MemberNotFoundException(memberId));
 				
 				// validation check
 				validateDuplicateEmail(memberId, request.getUserEmail());
@@ -78,43 +87,41 @@ public class MemberService {
 		    			.orElseThrow(() -> new MemberNotFoundException(memberId)));
 		}
 		
+		// 예외처리 커스텀을 위해 미사용
+		/**
 		@Transactional
 		public void deleteMembersById(Long memberId) {
 				
 				memberRepository.deleteById(memberId);
 		}
+		*/
 		
 		// PIS 이메일 중복 확인
 		private void validateDuplicateEmail(String email) {
 				if (memberRepository.existsByUserEmail(email)) {
-						// 커스텀예외처리하기
-						throw new IllegalArgumentException("이미 가입된 이메일 입니다.");
+					throw new MemberExistsEmailException(email);
 				}
 		}
 
 		// PIS 전화번호 중복 확인
 		private void validateDuplicatePhoneNumber(String phoneNumber) {
 				if (memberRepository.existsByUserPhoneNumber(phoneNumber)) {
-						// 커스텀예외처리하기
-						throw new IllegalArgumentException("이미 가입된 전화번호 입니다.");
+					throw new MemberExistsPhoneNumberException(phoneNumber);
 				}
 		}
 
 		// PIS 이메일 중복 확인(Update)
 		private void validateDuplicateEmail(Long memberId, String email) {
 				if (memberRepository.existsByUserEmailAndMemberIdNot(email, memberId)) {
-						// 커스텀예외처리하기
-						throw new IllegalArgumentException("이미 가입된 이메일 입니다.");
+					throw new MemberExistsEmailException(email);
 				}
 		}
 
 		// PIS 전화번호 중복 확인(Update)
 		private void validateDuplicatePhoneNumber(Long memberId, String phoneNumber) {
 				if (memberRepository.existsByUserPhoneNumberAndMemberIdNot(phoneNumber, memberId)) {
-						// 커스텀예외처리하기
-						throw new IllegalArgumentException("이미 가입된 전화번호 입니다.");
+					throw new MemberExistsPhoneNumberException(phoneNumber);
 				}
 		}
-		
 		
 }

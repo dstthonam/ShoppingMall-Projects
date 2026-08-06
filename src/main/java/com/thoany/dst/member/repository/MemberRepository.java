@@ -1,11 +1,16 @@
 package com.thoany.dst.member.repository;
 
+import java.awt.print.Pageable;
+
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.thoany.dst.member.entity.Members;
 
 public interface MemberRepository extends JpaRepository<Members, Long>{
 		
+		Page<Members> findByMemberOrderByMemberNameAsc(Members members, Pageable pageable);
+	
 		// Email 중복 여부 체크
 		boolean existsByUserEmail(String userEmail);
 		
